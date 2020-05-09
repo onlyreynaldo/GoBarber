@@ -1,4 +1,5 @@
 import React from 'react';
+import { Form } from '@unform/web';
 
 import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
 
@@ -9,36 +10,42 @@ import { Container, Content, Background } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-const SignIn: React.FC = () => (
-  <Container>
-    <Content>
-      <img src={logoImg} alt="GoBarber" />
+const SignIn: React.FC = () => {
+  function handleSubmit(data: object): void {
+    console.log(data);
+  }
 
-      <form>
-        <h1>Faça seu logon</h1>
+  return (
+    <Container>
+      <Content>
+        <img src={logoImg} alt="GoBarber" />
 
-        <Input icon={FiMail} name="email" placeholder="E-mail" />
+        <Form onSubmit={handleSubmit}>
+          <h1>Faça seu logon</h1>
 
-        <Input
-          icon={FiLock}
-          name="password"
-          type="password"
-          placeholder="Senha"
-        />
+          <Input icon={FiMail} name="email" placeholder="E-mail" />
 
-        <Button type="submit">Entrar</Button>
+          <Input
+            icon={FiLock}
+            name="password"
+            type="password"
+            placeholder="Senha"
+          />
 
-        <a href="forgot">Esqueci minha senha</a>
-      </form>
+          <Button type="submit">Entrar</Button>
 
-      <a href="sigin">
-        <FiLogIn />
-        Criar Conta
-      </a>
-    </Content>
+          <a href="forgot">Esqueci minha senha</a>
+        </Form>
 
-    <Background />
-  </Container>
-);
+        <a href="sigin">
+          <FiLogIn />
+          Criar Conta
+        </a>
+      </Content>
+
+      <Background />
+    </Container>
+  );
+};
 
 export default SignIn;
