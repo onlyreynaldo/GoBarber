@@ -15,6 +15,7 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 
 import getValidationErrors from '../../utils/getValidationErrors';
+
 import api from '../../services/api';
 
 import logoImg from '../../assets/logo.png';
@@ -36,36 +37,48 @@ const SignUp: React.FC = () => {
   const emailInputRef = useRef<TextInput>(null);
   const passwordInputRef = useRef<TextInput>(null);
 
-  const handleSignUp = useCallback(async (data: SignUpFormData) => {
-    try {
-      formRef.current?.setErrors({});
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      try {
+        formRef.current?.setErrors({});
 
-      const schema = Yup.object().shape({
-        name: Yup.string().required('Nome obrigatório'),
-        email: Yup.string()
-          .required('Email obrigatório')
-          .email('Digite um email válido'),
-        password: Yup.string().min(6, 'No minimo 6 digitos'),
-      });
+        const schema = Yup.object().shape({
+          name: Yup.string().required('Nome obrigatório'),
+          email: Yup.string()
+            .required('Email obrigatório')
+            .email('Digite um email válido'),
+          password: Yup.string().min(6, 'No minimo 6 digitos'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-        formRef.current?.setErrors(errors);
+        await api.post('/users', data);
 
-        return;
+        Alert.alert(
+          'Cadastro realizado com sucesso!',
+          'Você já pode fazer login no GoBarber',
+        );
+
+        navigation.goBack();
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+
+          formRef.current?.setErrors(errors);
+
+          return;
+        }
+
+        Alert.alert(
+          'Erro no cadastro!',
+          'Ocorreu um erro ao fazer o seu cadastro, tente novamente',
+        );
       }
-
-      Alert.alert(
-        'Erro no cadastro!',
-        'Ocorreu um erro ao fazer o seu cadastro, tente novamente',
-      );
-    }
-  }, []);
+    },
+    [navigation],
+  );
 
   return (
     <>
@@ -88,7 +101,7 @@ const SignUp: React.FC = () => {
             <Form onSubmit={handleSignUp} ref={formRef}>
               <Input
                 autoCapitalize="words"
-                name="Name"
+                name="name"
                 icon="user"
                 placeholder="Nome"
                 onSubmitEditing={() => {
@@ -101,7 +114,7 @@ const SignUp: React.FC = () => {
                 keyboardType="email-address"
                 autoCorrect={false}
                 autoCapitalize="none"
-                name="Email"
+                name="email"
                 icon="mail"
                 placeholder="E-mail"
                 ref={emailInputRef}
@@ -114,7 +127,7 @@ const SignUp: React.FC = () => {
               <Input
                 ref={passwordInputRef}
                 secureTextEntry
-                name="Password"
+                name="password"
                 icon="lock"
                 placeholder="Senha"
                 textContentType="newPassword"

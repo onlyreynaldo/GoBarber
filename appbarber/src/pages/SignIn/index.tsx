@@ -15,6 +15,8 @@ import { FormHandles } from '@unform/core';
 import * as Yup from 'yup';
 import getValidationErrors from '../../utils/getValidationErrors';
 
+import { useAuth } from '../../hooks/auth';
+
 import logoImg from '../../assets/logo.png';
 
 import Button from '../../components/button';
@@ -39,40 +41,44 @@ const SignIn: React.FC = () => {
   const passwordInputRef = useRef<TextInput>(null);
   const formRef = useRef<FormHandles>(null);
 
-  const handleSignIn = useCallback(async (data: SignInFormData) => {
-    try {
-      formRef.current?.setErrors({});
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('Email obrigatório')
-          .email('Digite um email válido'),
-        password: Yup.string().required('Senha obrigatória'),
-      });
+  const { signIn } = useAuth();
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+  const handleSignIn = useCallback(
+    async (data: SignInFormData) => {
+      try {
+        formRef.current?.setErrors({});
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('Email obrigatório')
+            .email('Digite um email válido'),
+          password: Yup.string().required('Senha obrigatória'),
+        });
 
-      /* await signIn({
+        await schema.validate(data, {
+          abortEarly: false,
+        });
+
+        await signIn({
           email: data.email,
           password: data.password,
         });
-        */
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
 
-        formRef.current?.setErrors(errors);
+          formRef.current?.setErrors(errors);
 
-        return;
+          return;
+        }
+
+        Alert.alert(
+          'Erro na autenticação',
+          'Ocorreu um erro ao fazer login, tente novamente mais tarde',
+        );
       }
-
-      Alert.alert(
-        'Erro na autenticação',
-        'Ocorreu um erro ao fazer login, tente novamente mais tarde',
-      );
-    }
-  }, []);
+    },
+    [signIn],
+  );
 
   return (
     <>
@@ -96,7 +102,7 @@ const SignIn: React.FC = () => {
                 autoCorrect={false}
                 autoCapitalize="none"
                 keyboardType="email-address"
-                name="Email"
+                name="email"
                 icon="mail"
                 placeholder="E-mail"
                 returnKeyType="next"
@@ -108,7 +114,7 @@ const SignIn: React.FC = () => {
               <Input
                 ref={passwordInputRef}
                 secureTextEntry
-                name="Password"
+                name="password"
                 icon="lock"
                 placeholder="Senha"
                 returnKeyType="send"
