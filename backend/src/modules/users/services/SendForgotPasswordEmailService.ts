@@ -1,5 +1,4 @@
 import { injectable, inject } from 'tsyringe';
-// import User from '@modules/users/infra/typeorm/entities/User';
 
 import AppError from '@shared/errors/AppError';
 import IUsersRepository from '../repositories/IUsersRepository';
@@ -30,9 +29,9 @@ class SendForgotPasswordEmailService {
       throw new AppError('Users does not exists')
     }
 
-    await this.userTokensRepository.generate(user.id)
+    const { token } = await this.userTokensRepository.generate(user.id)
 
-    this.mailProvider.sendMail(email, 'Pedido de recuperação de senha recebido')
+    await this.mailProvider.sendMail(email, `Pedido de recuperação de senha recebido: ${token}`)
   }
 }
 
