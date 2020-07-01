@@ -17,12 +17,11 @@ interface IRequest {
 @injectable()
 class UpdateProfileService {
   constructor(
-    @inject('IHashProvider')
-    private hashProvider:IHashProvider,
-
     @inject('UsersRepository')
-    private usersRepository:IUsersRepository
+    private usersRepository:IUsersRepository,
 
+    @inject('IHashProvider')
+    private hashProvider:IHashProvider
   ) {}
 
   public async execute({ user_id, name, email, password, old_password }: IRequest): Promise<User> {
@@ -58,7 +57,7 @@ class UpdateProfileService {
     user.name = name;
     user.email = email;
 
-    return await this.usersRepository.save(user);
+    return this.usersRepository.save(user);
   }
 }
 

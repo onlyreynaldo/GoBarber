@@ -15,10 +15,6 @@ class ShowProfileService {
   constructor(
     @inject('UsersRepository')
     private usersRepository:IUsersRepository,
-
-
-    @inject('UserTokensRepository')
-    private userTokensRepository: IUserTokensRepository,
   ) {}
 
   public async execute({ user_id }: IRequest): Promise<User> {

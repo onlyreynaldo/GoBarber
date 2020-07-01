@@ -8,7 +8,7 @@ let showProfile: ShowProfileService;
 describe('UpdateUserAvatar', () => {
   beforeEach(() => {
     fakeUsersRepository = new FakeUsersRepository();
-    showProfile = new ShowProfileService(fakeUsersRepository);
+    showProfile = new ShowProfileService(fakeUsersRepository, );
   });
   it('should be able to show the profile', async () => {
 
