@@ -2,7 +2,7 @@ import path from 'path';
 import crypto from 'crypto';
 import multer, { StorageEngine } from 'multer';
 
-const tempFolder = path.resolve(__dirname, '../', '../', 'tmp');
+const tempFolder = path.resolve(__dirname, '..', '..', 'tmp');
 
 interface IUploadConfig {
   driver: 's3' | 'disk';
